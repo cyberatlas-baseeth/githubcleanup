@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GitHub Unfollow Tool</title>
+  <style>
+    /* ── Reset & Base ──────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #0d1117;
+      --surface:  #161b22;
+      --border:   #30363d;
+      --text:     #e6edf3;
+      --text-dim: #8b949e;
+      --accent:   #58a6ff;
+      --accent-hover: #79c0ff;
+      --danger:   #f85149;
+      --danger-hover: #ff7b72;
+      --success:  #3fb950;
+      --warning:  #d29922;
+      --radius:   8px;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { color: var(--accent-hover); text-decoration: underline; }
+
+    /* ── Layout ────────────────────────────────────────────────────── */
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 24px 16px;
+    }
+
+    header {
+      text-align: center;
+      padding: 32px 0 24px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 24px;
+    }
+
+    header h1 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    header h1 svg { flex-shrink: 0; }
+
+    header p {
+      color: var(--text-dim);
+      margin-top: 6px;
+      font-size: 0.9rem;
+    }
+
+    /* ── Cards ─────────────────────────────────────────────────────── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+
+    .card-title {
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-dim);
+      margin-bottom: 14px;
+    }
+
+    /* ── Form Elements ─────────────────────────────────────────────── */
+    input[type="password"],
+    input[type="text"] {
+      width: 100%;
+      padding: 10px 14px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    input:focus { border-color: var(--accent); }
+
+    .input-group {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .input-group input { flex: 1; }
+
+    /* ── Buttons ───────────────────────────────────────────────────── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 18px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+
+    .btn:hover:not(:disabled) {
+      background: var(--border);
+    }
+
+    .btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #000;
+      border-color: var(--accent);
+    }
+    .btn-primary:hover:not(:disabled) {
+      background: var(--accent-hover);
+      border-color: var(--accent-hover);
+    }
+
+    .btn-danger {
+      background: var(--danger);
+      color: #fff;
+      border-color: var(--danger);
+    }
+    .btn-danger:hover:not(:disabled) {
+      background: var(--danger-hover);
+      border-color: var(--danger-hover);
+    }
+
+    .btn-sm {
+      padding: 6px 12px;
+      font-size: 0.8rem;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    /* ── User Profile (connected state) ────────────────────────────── */
+    .profile {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px;
+      background: var(--bg);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+    }
+
+    .profile img {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+    }
+
+    .profile-info { flex: 1; }
+    .profile-info strong { font-size: 1rem; }
+    .profile-info span { color: var(--text-dim); font-size: 0.85rem; display: block; }
+
+    /* ── Stats Row ─────────────────────────────────────────────────── */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .stat-card {
+      text-align: center;
+      padding: 16px 10px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+    }
+
+    .stat-card .num {
+      font-size: 1.8rem;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .stat-card .label {
+      font-size: 0.78rem;
+      color: var(--text-dim);
+      margin-top: 4px;
+    }
+
+    .stat-card.highlight { border-color: var(--danger); }
+    .stat-card.highlight .num { color: var(--danger); }
+
+    /* ── User List ─────────────────────────────────────────────────── */
+    .list-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+
+    .list-toolbar input[type="text"] {
+      flex: 1;
+      min-width: 160px;
+    }
+
+    .selected-count {
+      font-size: 0.82rem;
+      color: var(--accent);
+      font-weight: 600;
+      margin-left: auto;
+    }
+
+    .user-list {
+      max-height: 420px;
+      overflow-y: auto;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+    }
+
+    .user-list::-webkit-scrollbar { width: 6px; }
+    .user-list::-webkit-scrollbar-track { background: var(--surface); }
+    .user-list::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 3px;
+    }
+
+    .user-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+      transition: background 0.15s;
+    }
+
+    .user-row:last-child { border-bottom: none; }
+    .user-row:hover { background: rgba(88,166,255,0.04); }
+
+    .user-row img {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+    }
+
+    .user-row a {
+      flex: 1;
+      font-weight: 500;
+      font-size: 0.9rem;
+    }
+
+    .user-row input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text-dim);
+    }
+
+    /* ── Progress Bar ──────────────────────────────────────────────── */
+    .progress-wrap {
+      margin: 16px 0;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: var(--bg);
+      border-radius: 4px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 4px;
+      transition: width 0.3s ease;
+      width: 0%;
+    }
+
+    .progress-text {
+      font-size: 0.82rem;
+      color: var(--text-dim);
+      margin-top: 6px;
+      text-align: center;
+    }
+
+    /* ── Summary Box ───────────────────────────────────────────────── */
+    .summary {
+      padding: 16px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-top: 12px;
+    }
+
+    .summary .row {
+      display: flex;
+      justify-content: space-between;
+      padding: 4px 0;
+      font-size: 0.88rem;
+    }
+
+    .summary .row .val { font-weight: 600; }
+    .summary .row.success .val { color: var(--success); }
+    .summary .row.fail .val { color: var(--danger); }
+
+    /* ── Alerts / Messages ─────────────────────────────────────────── */
+    .alert {
+      padding: 12px 16px;
+      border-radius: var(--radius);
+      font-size: 0.85rem;
+      margin-bottom: 12px;
+      border: 1px solid;
+    }
+
+    .alert-error {
+      background: rgba(248,81,73,0.1);
+      border-color: var(--danger);
+      color: var(--danger);
+    }
+
+    .alert-warning {
+      background: rgba(210,153,34,0.1);
+      border-color: var(--warning);
+      color: var(--warning);
+    }
+
+    .alert-success {
+      background: rgba(63,185,80,0.1);
+      border-color: var(--success);
+      color: var(--success);
+    }
+
+    .alert-info {
+      background: rgba(88,166,255,0.1);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* ── Rate Limit Badge ──────────────────────────────────────────── */
+    .rate-limit {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.78rem;
+      color: var(--text-dim);
+      padding: 4px 10px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+    }
+
+    .rate-limit.warn { border-color: var(--warning); color: var(--warning); }
+
+    .rate-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--success);
+    }
+
+    .rate-limit.warn .rate-dot { background: var(--warning); }
+
+    /* ── Spinner ───────────────────────────────────────────────────── */
+    .spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+    }
+
+    .spinner-lg { width: 28px; height: 28px; border-width: 3px; }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Section Visibility ────────────────────────────────────────── */
+    .hidden { display: none !important; }
+
+    /* ── Footer ────────────────────────────────────────────────────── */
+    footer {
+      text-align: center;
+      padding: 24px 0;
+      margin-top: 32px;
+      border-top: 1px solid var(--border);
+      font-size: 0.8rem;
+      color: var(--text-dim);
+    }
+
+    /* ── Responsive ────────────────────────────────────────────────── */
+    @media (max-width: 520px) {
+      .stats { grid-template-columns: 1fr; }
+      .input-group { flex-direction: column; }
+      .btn-group { flex-direction: column; }
+      .list-toolbar { flex-direction: column; align-items: stretch; }
+      .selected-count { margin-left: 0; text-align: center; }
+    }
+
+    /* ── Fade-in animation ─────────────────────────────────────────── */
+    .fade-in {
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── User row removal ──────────────────────────────────────────── */
+    .user-row.removing {
+      animation: slideOut 0.3s ease forwards;
+    }
+
+    @keyframes slideOut {
+      to { opacity: 0; transform: translateX(40px); max-height: 0; padding: 0 14px; overflow: hidden; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <!-- ═══ Header ═══ -->
+    <header>
+      <h1>
+        <svg width="28" height="28" viewBox="0 0 16 16" fill="currentColor">
+          <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38
+            0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15
+            -.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87
+            .51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12
+            0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82
+            2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65
+            3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013
+            0 0016 8c0-4.42-3.58-8-8-8z"/>
+        </svg>
+        GitHub Unfollow Tool
+      </h1>
+      <p>Seni takip etmeyen kullanıcıları bul ve takipten çık</p>
+    </header>
+
+    <!-- ═══ Section 1: Token Input ═══ -->
+    <div class="card" id="authCard">
+      <div class="card-title">🔑 Bağlantı</div>
+
+      <div id="authForm">
+        <div class="input-group">
+          <input type="password" id="tokenInput" placeholder="GitHub Personal Access Token" />
+          <button class="btn btn-primary" id="connectBtn" onclick="connect()">
+            Bağlan
+          </button>
+        </div>
+        <p style="font-size:0.8rem; color:var(--text-dim); margin-top:4px;">
+          Token'ın yok mu?
+          <a href="https://github.com/settings/tokens/new?scopes=user:follow&description=gh-unfollow" target="_blank" rel="noopener">
+            Buradan oluştur →
+          </a>
+        </p>
+        <div id="authError" class="alert alert-error hidden" style="margin-top:12px;"></div>
+      </div>
+
+      <div id="authProfile" class="hidden fade-in" style="margin-top:12px;">
+        <div class="profile">
+          <img id="profileAvatar" src="" alt="" />
+          <div class="profile-info">
+            <strong id="profileName"></strong>
+            <span id="profileLogin"></span>
+          </div>
+          <button class="btn btn-sm" onclick="disconnect()">Çıkış</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ Section 2: Load Data ═══ -->
+    <div class="card hidden" id="loadCard">
+      <div class="card-title">📊 Veri Yükleme</div>
+      <button class="btn btn-primary" id="loadBtn" onclick="loadData()" style="width:100%;">
+        Listeyi Yükle
+      </button>
+      <div id="loadProgress" class="hidden" style="margin-top:14px;">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <div class="spinner"></div>
+          <span id="loadStatus" style="font-size:0.85rem; color:var(--text-dim);"></span>
+        </div>
+      </div>
+      <div id="loadError" class="alert alert-error hidden" style="margin-top:12px;"></div>
+    </div>
+
+    <!-- ═══ Section 3: Stats + List ═══ -->
+    <div class="card hidden" id="listCard">
+      <!-- Stats -->
+      <div class="stats fade-in" id="statsRow">
+        <div class="stat-card">
+          <div class="num" id="statFollowing">0</div>
+          <div class="label">Takip Edilen</div>
+        </div>
+        <div class="stat-card">
+          <div class="num" id="statFollowers">0</div>
+          <div class="label">Takipçi</div>
+        </div>
+        <div class="stat-card highlight">
+          <div class="num" id="statNon">0</div>
+          <div class="label">Seni Takip Etmiyor</div>
+        </div>
+      </div>
+
+      <!-- Rate Limit -->
+      <div style="margin-bottom:12px;">
+        <span class="rate-limit" id="rateLimitBadge">
+          <span class="rate-dot"></span>
+          API: <span id="rateLimitVal">—</span>
+        </span>
+      </div>
+
+      <!-- Toolbar -->
+      <div class="list-toolbar">
+        <input type="text" id="searchInput" placeholder="Kullanıcı ara..." oninput="filterList()" />
+        <div class="btn-group">
+          <button class="btn btn-sm" onclick="selectAll()">Tümünü Seç</button>
+          <button class="btn btn-sm" onclick="deselectAll()">Seçimi Kaldır</button>
+        </div>
+        <span class="selected-count" id="selectedCount">0 seçili</span>
+      </div>
+
+      <!-- User List -->
+      <div class="user-list" id="userList"></div>
+
+      <!-- Unfollow Controls -->
+      <div style="margin-top:16px; display:flex; gap:10px; flex-wrap:wrap;">
+        <button class="btn btn-danger" id="unfollowBtn" onclick="executeUnfollow()" disabled>
+          Seçilenleri Unfollow Et
+        </button>
+        <button class="btn" id="refreshBtn" onclick="loadData()">
+          ↻ Yenile
+        </button>
+      </div>
+
+      <!-- Progress -->
+      <div class="progress-wrap hidden" id="unfollowProgress">
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="progress-text" id="progressText">0 / 0 tamamlandı</div>
+      </div>
+
+      <!-- Summary -->
+      <div id="unfollowSummary" class="hidden"></div>
+
+      <!-- Alerts during unfollow -->
+      <div id="unfollowAlert" class="hidden" style="margin-top:12px;"></div>
+    </div>
+
+    <footer>
+      GitHub Unfollow Tool · Token sadece tarayıcınızda saklanır, hiçbir sunucuya gönderilmez. ·
+      <a href="https://github.com" target="_blank">GitHub</a>
+    </footer>
+  </div>
+
+  <script>
+    /* ═══════════════════════════════════════════════════════════════
+       GitHub Unfollow Tool — All logic in one script
+       ═══════════════════════════════════════════════════════════════ */
+
+    // ── State ──────────────────────────────────────────────────────
+    let state = {
+      token: null,
+      user: null,
+      followers: [],
+      following: [],
+      nonFollowers: [],
+      selected: new Set(),
+      rateLimit: { remaining: null, limit: null, reset: null },
+      isProcessing: false,
+    };
+
+    // ── DOM References ─────────────────────────────────────────────
+    const $ = (id) => document.getElementById(id);
+
+    // ── Utilities ──────────────────────────────────────────────────
+    const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+    /**
+     * Parse rate limit headers from a GitHub API response
+     */
+    function parseRateLimit(response) {
+      const remaining = response.headers.get('x-ratelimit-remaining');
+      const limit = response.headers.get('x-ratelimit-limit');
+      const reset = response.headers.get('x-ratelimit-reset');
+
+      if (remaining !== null) {
+        state.rateLimit = {
+          remaining: parseInt(remaining, 10),
+          limit: parseInt(limit, 10),
+          reset: parseInt(reset, 10),
+        };
+        updateRateLimitUI();
+      }
+    }
+
+    /**
+     * Update rate limit badge in the UI
+     */
+    function updateRateLimitUI() {
+      const badge = $('rateLimitBadge');
+      const val = $('rateLimitVal');
+      if (state.rateLimit.remaining === null) {
+        val.textContent = '—';
+        badge.classList.remove('warn');
+        return;
+      }
+      val.textContent = `${state.rateLimit.remaining} / ${state.rateLimit.limit}`;
+      if (state.rateLimit.remaining < 10) {
+        badge.classList.add('warn');
+      } else {
+        badge.classList.remove('warn');
+      }
+    }
+
+    /**
+     * Build authorization headers for GitHub API
+     */
+    function apiHeaders() {
+      return {
+        Authorization: `Bearer ${state.token}`,
+        'X-GitHub-Api-Version': '2022-11-28',
+        Accept: 'application/vnd.github+json',
+      };
+    }
+
+    /**
+     * Fetch all pages from a paginated GitHub API endpoint
+     * @param {string} endpoint - e.g. '/user/followers'
+     * @param {function} onPage - callback with (items, totalSoFar) for progress
+     * @returns {Promise<Array>} all items combined
+     */
+    async function fetchAll(endpoint, onPage) {
+      const items = [];
+      let page = 1;
+      while (true) {
+        const url = `https://api.github.com${endpoint}?per_page=100&page=${page}`;
+        const res = await fetch(url, { headers: apiHeaders() });
+        parseRateLimit(res);
+
+        if (!res.ok) {
+          const err = await handleApiError(res);
+          throw new Error(err);
+        }
+
+        const data = await res.json();
+        if (!Array.isArray(data) || data.length === 0) break;
+
+        items.push(...data);
+        if (onPage) onPage(data, items.length);
+        if (data.length < 100) break; // last page
+        page++;
+      }
+      return items;
+    }
+
+    /**
+     * Parse GitHub API errors into user-friendly messages
+     */
+    async function handleApiError(res) {
+      if (res.status === 401) {
+        return 'Token geçersiz veya yetersiz izin. Lütfen token\'ınızı kontrol edin.';
+      }
+      if (res.status === 403 || res.status === 429) {
+        const resetTime = res.headers.get('x-ratelimit-reset');
+        if (resetTime) {
+          const resetDate = new Date(parseInt(resetTime, 10) * 1000);
+          const now = new Date();
+          const diffMin = Math.ceil((resetDate - now) / 60000);
+          return `Rate limit aşıldı. ~${diffMin} dakika sonra tekrar deneyin.`;
+        }
+        return 'Rate limit aşıldı. Lütfen bir süre bekleyip tekrar deneyin.';
+      }
+      try {
+        const body = await res.json();
+        return body.message || `API hatası: ${res.status}`;
+      } catch {
+        return `API hatası: ${res.status}`;
+      }
+    }
+
+    // ── Auth ───────────────────────────────────────────────────────
+
+    /**
+     * Connect with a GitHub PAT — validate via GET /user
+     */
+    async function connect() {
+      const tokenEl = $('tokenInput');
+      const btn = $('connectBtn');
+      const errEl = $('authError');
+      errEl.classList.add('hidden');
+
+      const token = tokenEl.value.trim();
+      if (!token) {
+        showError(errEl, 'Lütfen bir token girin.');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span> Bağlanıyor…';
+
+      try {
+        const res = await fetch('https://api.github.com/user', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'X-GitHub-Api-Version': '2022-11-28',
+            Accept: 'application/vnd.github+json',
+          },
+        });
+        parseRateLimit(res);
+
+        if (!res.ok) {
+          const msg = await handleApiError(res);
+          showError(errEl, msg);
+          return;
+        }
+
+        const user = await res.json();
+        state.token = token;
+        state.user = user;
+
+        // Save token to localStorage
+        localStorage.setItem('gh_unfollow_token', token);
+
+        // Update UI
+        $('profileAvatar').src = user.avatar_url;
+        $('profileAvatar').alt = user.login;
+        $('profileName').textContent = user.name || user.login;
+        $('profileLogin').textContent = `@${user.login}`;
+        $('authForm').classList.add('hidden');
+        $('authProfile').classList.remove('hidden');
+        $('loadCard').classList.remove('hidden');
+      } catch (e) {
+        showError(errEl, 'Ağ hatası. İnternet bağlantınızı kontrol edin.');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = 'Bağlan';
+      }
+    }
+
+    /**
+     * Disconnect — clear state and localStorage
+     */
+    function disconnect() {
+      state.token = null;
+      state.user = null;
+      state.followers = [];
+      state.following = [];
+      state.nonFollowers = [];
+      state.selected.clear();
+      localStorage.removeItem('gh_unfollow_token');
+
+      $('tokenInput').value = '';
+      $('authForm').classList.remove('hidden');
+      $('authProfile').classList.add('hidden');
+      $('loadCard').classList.add('hidden');
+      $('listCard').classList.add('hidden');
+    }
+
+    // ── Data Loading ──────────────────────────────────────────────
+
+    /**
+     * Load followers and following, compute non-followers
+     */
+    async function loadData() {
+      const btn = $('loadBtn');
+      const prog = $('loadProgress');
+      const status = $('loadStatus');
+      const errEl = $('loadError');
+
+      errEl.classList.add('hidden');
+      $('listCard').classList.add('hidden');
+      prog.classList.remove('hidden');
+      btn.disabled = true;
+
+      try {
+        // Fetch following
+        status.textContent = 'Following yükleniyor…';
+        state.following = await fetchAll('/user/following', (_, total) => {
+          status.textContent = `Following yükleniyor… (${total})`;
+        });
+
+        // Fetch followers
+        status.textContent = 'Followers yükleniyor…';
+        state.followers = await fetchAll('/user/followers', (_, total) => {
+          status.textContent = `Followers yükleniyor… (${total})`;
+        });
+
+        // Compute non-followers
+        const followerSet = new Set(state.followers.map((u) => u.login.toLowerCase()));
+        state.nonFollowers = state.following.filter(
+          (u) => !followerSet.has(u.login.toLowerCase())
+        );
+        state.selected.clear();
+
+        // Show stats
+        $('statFollowing').textContent = state.following.length;
+        $('statFollowers').textContent = state.followers.length;
+        $('statNon').textContent = state.nonFollowers.length;
+
+        // Render list
+        renderUserList();
+        $('listCard').classList.remove('hidden');
+        $('listCard').classList.add('fade-in');
+
+        // Reset unfollow UI
+        $('unfollowProgress').classList.add('hidden');
+        $('unfollowSummary').classList.remove('hidden');
+        $('unfollowSummary').innerHTML = '';
+        $('unfollowSummary').classList.add('hidden');
+        $('unfollowAlert').classList.add('hidden');
+
+      } catch (e) {
+        showError(errEl, e.message || 'Veri yüklenirken bir hata oluştu.');
+      } finally {
+        btn.disabled = false;
+        prog.classList.add('hidden');
+      }
+    }
+
+    // ── User List Rendering ───────────────────────────────────────
+
+    /**
+     * Render the non-followers user list with current search filter
+     */
+    function renderUserList() {
+      const container = $('userList');
+      const query = ($('searchInput')?.value || '').toLowerCase();
+      const filtered = state.nonFollowers.filter((u) =>
+        u.login.toLowerCase().includes(query)
+      );
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            ${state.nonFollowers.length === 0
+              ? '🎉 Seni takip etmeyen kimse yok!'
+              : '🔍 Arama sonucu bulunamadı'}
+          </div>`;
+        updateSelectedCount();
+        return;
+      }
+
+      container.innerHTML = filtered
+        .map(
+          (u) => `
+        <div class="user-row" data-login="${u.login}" id="row-${u.login}">
+          <input type="checkbox"
+            ${state.selected.has(u.login) ? 'checked' : ''}
+            onchange="toggleSelect('${u.login}', this.checked)" />
+          <img src="${u.avatar_url}" alt="${u.login}" loading="lazy" />
+          <a href="${u.html_url}" target="_blank" rel="noopener">${u.login}</a>
+        </div>`
+        )
+        .join('');
+
+      updateSelectedCount();
+    }
+
+    /**
+     * Toggle a user selection
+     */
+    function toggleSelect(login, checked) {
+      if (checked) {
+        state.selected.add(login);
+      } else {
+        state.selected.delete(login);
+      }
+      updateSelectedCount();
+    }
+
+    /**
+     * Update the selected count and unfollow button state
+     */
+    function updateSelectedCount() {
+      const count = state.selected.size;
+      $('selectedCount').textContent = `${count} seçili`;
+      $('unfollowBtn').disabled = count === 0 || state.isProcessing;
+    }
+
+    /**
+     * Select all visible (filtered) users
+     */
+    function selectAll() {
+      const query = ($('searchInput')?.value || '').toLowerCase();
+      state.nonFollowers.forEach((u) => {
+        if (u.login.toLowerCase().includes(query)) {
+          state.selected.add(u.login);
+        }
+      });
+      renderUserList();
+    }
+
+    /**
+     * Deselect all users
+     */
+    function deselectAll() {
+      state.selected.clear();
+      renderUserList();
+    }
+
+    /**
+     * Filter user list on search input
+     */
+    function filterList() {
+      renderUserList();
+    }
+
+    // ── Unfollow Execution ────────────────────────────────────────
+
+    /**
+     * Execute unfollow for all selected users
+     */
+    async function executeUnfollow() {
+      if (state.selected.size === 0 || state.isProcessing) return;
+
+      const usernames = [...state.selected];
+      const total = usernames.length;
+      let succeeded = 0;
+      let failed = 0;
+
+      state.isProcessing = true;
+      $('unfollowBtn').disabled = true;
+      $('loadBtn').disabled = true;
+      $('refreshBtn').disabled = true;
+      $('unfollowAlert').classList.add('hidden');
+
+      // Show progress
+      const progWrap = $('unfollowProgress');
+      const fill = $('progressFill');
+      const text = $('progressText');
+      progWrap.classList.remove('hidden');
+      fill.style.width = '0%';
+      text.textContent = `0 / ${total} tamamlandı`;
+
+      let stopped = false;
+
+      for (let i = 0; i < total; i++) {
+        if (stopped) break;
+        const username = usernames[i];
+
+        try {
+          const res = await fetch(
+            `https://api.github.com/user/following/${username}`,
+            { method: 'DELETE', headers: apiHeaders() }
+          );
+          parseRateLimit(res);
+
+          if (res.status === 204 || res.status === 404) {
+            // 204 = success, 404 = already unfollowed
+            succeeded++;
+
+            // Remove from state
+            state.nonFollowers = state.nonFollowers.filter(
+              (u) => u.login !== username
+            );
+            state.selected.delete(username);
+
+            // Animate removal from DOM
+            const row = $(`row-${username}`);
+            if (row) {
+              row.classList.add('removing');
+              setTimeout(() => row.remove(), 300);
+            }
+          } else if (res.status === 403 || res.status === 429) {
+            // Rate limit hit — stop processing
+            const msg = await handleApiError(res);
+            showAlert('unfollowAlert', 'alert-warning', `⚠️ ${msg} — İşlem durduruldu.`);
+            stopped = true;
+            failed++;
+          } else {
+            failed++;
+          }
+        } catch {
+          failed++;
+        }
+
+        // Update progress
+        const done = succeeded + failed;
+        const pct = Math.round((done / total) * 100);
+        fill.style.width = `${pct}%`;
+        text.textContent = `${done} / ${total} tamamlandı`;
+
+        // Rate limit warning check
+        if (state.rateLimit.remaining !== null && state.rateLimit.remaining < 10 && !stopped) {
+          showAlert('unfollowAlert', 'alert-warning',
+            `⚠️ Rate limit düşük (${state.rateLimit.remaining} kalan). İşlem devam ediyor…`);
+        }
+
+        // Delay between unfollows (unless last or stopped)
+        if (i < total - 1 && !stopped) {
+          await sleep(300);
+        }
+      }
+
+      // Done
+      state.isProcessing = false;
+      $('unfollowBtn').disabled = state.selected.size === 0;
+      $('loadBtn').disabled = false;
+      $('refreshBtn').disabled = false;
+
+      // Update stats
+      $('statNon').textContent = state.nonFollowers.length;
+      $('statFollowing').textContent = state.following.length - succeeded;
+      updateSelectedCount();
+
+      // Show summary
+      showSummary(total, succeeded, failed);
+    }
+
+    /**
+     * Display the unfollow execution summary
+     */
+    function showSummary(total, succeeded, failed) {
+      const el = $('unfollowSummary');
+      el.classList.remove('hidden');
+      el.innerHTML = `
+        <div class="summary fade-in">
+          <div class="row"><span>Toplam İşlem</span><span class="val">${total}</span></div>
+          <div class="row success"><span>Başarılı</span><span class="val">${succeeded}</span></div>
+          ${failed > 0 ? `<div class="row fail"><span>Başarısız</span><span class="val">${failed}</span></div>` : ''}
+        </div>`;
+    }
+
+    // ── Alert Helpers ─────────────────────────────────────────────
+
+    function showError(el, msg) {
+      el.textContent = msg;
+      el.classList.remove('hidden');
+    }
+
+    function showAlert(id, cls, msg) {
+      const el = $(id);
+      el.className = `alert ${cls}`;
+      el.textContent = msg;
+      el.classList.remove('hidden');
+    }
+
+    // ── Init: Restore token from localStorage ─────────────────────
+    (function init() {
+      const saved = localStorage.getItem('gh_unfollow_token');
+      if (saved) {
+        $('tokenInput').value = saved;
+        connect();
+      }
+    })();
+  </script>
+</body>
+</html>
