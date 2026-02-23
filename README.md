@@ -1,8 +1,8 @@
 # 🔍 GitHub Unfollow Tool
 
-Seni takip etmeyen GitHub kullanıcılarını tespit et ve tek tıkla takipten çık.
+Find GitHub users who don't follow you back and unfollow them with a single click.
 
-**Sunucu yok, kurulum yok** — sadece `index.html` dosyasını tarayıcında aç ve kullan.
+**No server, no installation** — just open `index.html` in your browser and go.
 
 ![Dark Theme](https://img.shields.io/badge/theme-dark-0d1117)
 ![No Server](https://img.shields.io/badge/server-none-success)
@@ -10,79 +10,79 @@ Seni takip etmeyen GitHub kullanıcılarını tespit et ve tek tıkla takipten �
 
 ---
 
-## ✨ Özellikler
+## ✨ Features
 
-- 🔑 GitHub Personal Access Token ile giriş
-- 📊 Takipçi / Takip edilen / Seni takip etmeyen sayıları
-- 🔍 Kullanıcı arama ve filtreleme
-- ☑️ Tümünü seç / tekli seçim
-- 🚀 Toplu unfollow (rate limit korumalı)
-- 📈 İlerleme çubuğu ve işlem özeti
-- 🌙 GitHub tarzı koyu tema
-- 📱 Mobil uyumlu tasarım
+- 🔑 Authenticate with a GitHub Personal Access Token
+- 📊 View follower / following / not-following-back counts
+- 🔍 Search and filter users instantly
+- ☑️ Select all / individual selection
+- 🚀 Bulk unfollow with rate limit protection
+- 📈 Progress bar and execution summary
+- 🌙 GitHub-style dark theme
+- 📱 Fully responsive design
 
 ---
 
-## 🚀 Nasıl Kullanılır
+## 🚀 How to Use
 
-### 1. Projeyi İndir
+### 1. Download the Project
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/gh-unfollow.git
-cd gh-unfollow
+git clone https://github.com/cyberatlas-baseeth/githubcleanup.git
+cd githubcleanup
 ```
 
-Ya da direkt olarak `index.html` dosyasını indirin.
+Or simply download the `index.html` file directly.
 
-### 2. GitHub Token Oluştur
+### 2. Create a GitHub Token
 
-1. [Bu linke tıklayın](https://github.com/settings/tokens/new?scopes=user:follow&description=gh-unfollow) (GitHub Token oluşturma sayfası)
-2. Gerekli scope: **`user:follow`**
-3. "Generate token" butonuna tıklayın
-4. Token'ı kopyalayın
+1. [Click here to create a token](https://github.com/settings/tokens/new?scopes=user:follow&description=gh-unfollow) (GitHub token creation page)
+2. Required scope: **`user:follow`**
+3. Click "Generate token"
+4. Copy the token
 
-### 3. Kullan
+### 3. Use It
 
-1. `index.html` dosyasını tarayıcınızda açın
-2. Token'ınızı girin ve **Bağlan** butonuna tıklayın
-3. **Listeyi Yükle** ile seni takip etmeyenleri görün
-4. İstediğiniz kullanıcıları seçin
-5. **Seçilenleri Unfollow Et** butonuna tıklayın
-
----
-
-## 🔒 Güvenlik
-
-| Konu | Detay |
-|------|-------|
-| Token depolama | Sadece tarayıcınızın `localStorage`'ında saklanır |
-| Sunucu iletişimi | **Hiçbir sunucuya gönderilmez** — sadece `api.github.com` ile iletişim |
-| Kaynak kodu | Tüm kod `index.html` içinde, açık ve okunabilir |
-| Çıkış | "Çıkış" butonu token'ı `localStorage`'dan siler |
-
-> ⚠️ **Önemli:** Token'ınızı kimseyle paylaşmayın. Bu uygulama token'ınızı yalnızca GitHub API isteklerinde kullanır.
+1. Open `index.html` in your browser
+2. Paste your token and click **Connect**
+3. Click **Load List** to fetch your followers and following
+4. Select the users you want to unfollow
+5. Click **Unfollow Selected**
 
 ---
 
-## ⏱ GitHub API Rate Limit
+## 🔒 Security
 
-- GitHub API saatte **5.000 istek** hakkı verir (authenticated)
-- Her unfollow işlemi arasında **300ms** bekleme süresi uygulanır
-- Rate limit **10'un altına** düşünce uyarı verilir
-- Rate limit aşılırsa işlem otomatik olarak durur
+| Topic | Details |
+|-------|---------|
+| Token storage | Stored only in your browser's `localStorage` |
+| Server communication | **Never sent to any server** — only communicates with `api.github.com` |
+| Source code | Fully open and readable inside `index.html` |
+| Logout | Clicking "Logout" removes the token from `localStorage` |
 
----
-
-## 🤝 Katkıda Bulunma
-
-1. Bu repoyu fork edin
-2. Yeni bir branch oluşturun (`git checkout -b feature/yeni-ozellik`)
-3. Değişikliklerinizi commit edin (`git commit -m 'feat: yeni özellik'`)
-4. Branch'inizi push edin (`git push origin feature/yeni-ozellik`)
-5. Pull Request açın
+> ⚠️ **Important:** Never share your token with anyone. This tool uses your token solely for GitHub API requests.
 
 ---
 
-## 📄 Lisans
+## ⏱ GitHub API Rate Limits
 
-Bu proje [MIT Lisansı](LICENSE) ile lisanslanmıştır.
+- GitHub API allows **5,000 requests per hour** (authenticated)
+- A **300ms delay** is applied between each unfollow request
+- A warning is displayed when the rate limit drops **below 10**
+- If the rate limit is exceeded, the process stops automatically
+
+---
+
+## 🤝 Contributing
+
+1. Fork this repository
+2. Create a new branch (`git checkout -b feature/new-feature`)
+3. Commit your changes (`git commit -m 'feat: add new feature'`)
+4. Push your branch (`git push origin feature/new-feature`)
+5. Open a Pull Request
+
+---
+
+## 📄 License
+
+This project is licensed under the [MIT License](LICENSE).

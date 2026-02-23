@@ -1,26 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GitHub Unfollow Tool</title>
   <style>
     /* ── Reset & Base ──────────────────────────────────────────────── */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
     :root {
-      --bg:       #0d1117;
-      --surface:  #161b22;
-      --border:   #30363d;
-      --text:     #e6edf3;
+      --bg: #0d1117;
+      --surface: #161b22;
+      --border: #30363d;
+      --text: #e6edf3;
       --text-dim: #8b949e;
-      --accent:   #58a6ff;
+      --accent: #58a6ff;
       --accent-hover: #79c0ff;
-      --danger:   #f85149;
+      --danger: #f85149;
       --danger-hover: #ff7b72;
-      --success:  #3fb950;
-      --warning:  #d29922;
-      --radius:   8px;
+      --success: #3fb950;
+      --warning: #d29922;
+      --radius: 8px;
     }
 
     body {
@@ -31,8 +38,15 @@
       line-height: 1.5;
     }
 
-    a { color: var(--accent); text-decoration: none; }
-    a:hover { color: var(--accent-hover); text-decoration: underline; }
+    a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    a:hover {
+      color: var(--accent-hover);
+      text-decoration: underline;
+    }
 
     /* ── Layout ────────────────────────────────────────────────────── */
     .container {
@@ -57,7 +71,9 @@
       gap: 10px;
     }
 
-    header h1 svg { flex-shrink: 0; }
+    header h1 svg {
+      flex-shrink: 0;
+    }
 
     header p {
       color: var(--text-dim);
@@ -97,7 +113,9 @@
       transition: border-color 0.2s;
     }
 
-    input:focus { border-color: var(--accent); }
+    input:focus {
+      border-color: var(--accent);
+    }
 
     .input-group {
       display: flex;
@@ -105,7 +123,9 @@
       margin-bottom: 10px;
     }
 
-    .input-group input { flex: 1; }
+    .input-group input {
+      flex: 1;
+    }
 
     /* ── Buttons ───────────────────────────────────────────────────── */
     .btn {
@@ -139,6 +159,7 @@
       color: #000;
       border-color: var(--accent);
     }
+
     .btn-primary:hover:not(:disabled) {
       background: var(--accent-hover);
       border-color: var(--accent-hover);
@@ -149,6 +170,7 @@
       color: #fff;
       border-color: var(--danger);
     }
+
     .btn-danger:hover:not(:disabled) {
       background: var(--danger-hover);
       border-color: var(--danger-hover);
@@ -183,9 +205,19 @@
       border: 2px solid var(--border);
     }
 
-    .profile-info { flex: 1; }
-    .profile-info strong { font-size: 1rem; }
-    .profile-info span { color: var(--text-dim); font-size: 0.85rem; display: block; }
+    .profile-info {
+      flex: 1;
+    }
+
+    .profile-info strong {
+      font-size: 1rem;
+    }
+
+    .profile-info span {
+      color: var(--text-dim);
+      font-size: 0.85rem;
+      display: block;
+    }
 
     /* ── Stats Row ─────────────────────────────────────────────────── */
     .stats {
@@ -215,8 +247,13 @@
       margin-top: 4px;
     }
 
-    .stat-card.highlight { border-color: var(--danger); }
-    .stat-card.highlight .num { color: var(--danger); }
+    .stat-card.highlight {
+      border-color: var(--danger);
+    }
+
+    .stat-card.highlight .num {
+      color: var(--danger);
+    }
 
     /* ── User List ─────────────────────────────────────────────────── */
     .list-toolbar {
@@ -246,8 +283,14 @@
       border-radius: var(--radius);
     }
 
-    .user-list::-webkit-scrollbar { width: 6px; }
-    .user-list::-webkit-scrollbar-track { background: var(--surface); }
+    .user-list::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .user-list::-webkit-scrollbar-track {
+      background: var(--surface);
+    }
+
     .user-list::-webkit-scrollbar-thumb {
       background: var(--border);
       border-radius: 3px;
@@ -262,8 +305,13 @@
       transition: background 0.15s;
     }
 
-    .user-row:last-child { border-bottom: none; }
-    .user-row:hover { background: rgba(88,166,255,0.04); }
+    .user-row:last-child {
+      border-bottom: none;
+    }
+
+    .user-row:hover {
+      background: rgba(88, 166, 255, 0.04);
+    }
 
     .user-row img {
       width: 32px;
@@ -336,9 +384,17 @@
       font-size: 0.88rem;
     }
 
-    .summary .row .val { font-weight: 600; }
-    .summary .row.success .val { color: var(--success); }
-    .summary .row.fail .val { color: var(--danger); }
+    .summary .row .val {
+      font-weight: 600;
+    }
+
+    .summary .row.success .val {
+      color: var(--success);
+    }
+
+    .summary .row.fail .val {
+      color: var(--danger);
+    }
 
     /* ── Alerts / Messages ─────────────────────────────────────────── */
     .alert {
@@ -350,25 +406,25 @@
     }
 
     .alert-error {
-      background: rgba(248,81,73,0.1);
+      background: rgba(248, 81, 73, 0.1);
       border-color: var(--danger);
       color: var(--danger);
     }
 
     .alert-warning {
-      background: rgba(210,153,34,0.1);
+      background: rgba(210, 153, 34, 0.1);
       border-color: var(--warning);
       color: var(--warning);
     }
 
     .alert-success {
-      background: rgba(63,185,80,0.1);
+      background: rgba(63, 185, 80, 0.1);
       border-color: var(--success);
       color: var(--success);
     }
 
     .alert-info {
-      background: rgba(88,166,255,0.1);
+      background: rgba(88, 166, 255, 0.1);
       border-color: var(--accent);
       color: var(--accent);
     }
@@ -386,7 +442,10 @@
       border-radius: 20px;
     }
 
-    .rate-limit.warn { border-color: var(--warning); color: var(--warning); }
+    .rate-limit.warn {
+      border-color: var(--warning);
+      color: var(--warning);
+    }
 
     .rate-dot {
       width: 6px;
@@ -395,7 +454,9 @@
       background: var(--success);
     }
 
-    .rate-limit.warn .rate-dot { background: var(--warning); }
+    .rate-limit.warn .rate-dot {
+      background: var(--warning);
+    }
 
     /* ── Spinner ───────────────────────────────────────────────────── */
     .spinner {
@@ -408,12 +469,22 @@
       animation: spin 0.6s linear infinite;
     }
 
-    .spinner-lg { width: 28px; height: 28px; border-width: 3px; }
+    .spinner-lg {
+      width: 28px;
+      height: 28px;
+      border-width: 3px;
+    }
 
-    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
 
     /* ── Section Visibility ────────────────────────────────────────── */
-    .hidden { display: none !important; }
+    .hidden {
+      display: none !important;
+    }
 
     /* ── Footer ────────────────────────────────────────────────────── */
     footer {
@@ -427,11 +498,27 @@
 
     /* ── Responsive ────────────────────────────────────────────────── */
     @media (max-width: 520px) {
-      .stats { grid-template-columns: 1fr; }
-      .input-group { flex-direction: column; }
-      .btn-group { flex-direction: column; }
-      .list-toolbar { flex-direction: column; align-items: stretch; }
-      .selected-count { margin-left: 0; text-align: center; }
+      .stats {
+        grid-template-columns: 1fr;
+      }
+
+      .input-group {
+        flex-direction: column;
+      }
+
+      .btn-group {
+        flex-direction: column;
+      }
+
+      .list-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .selected-count {
+        margin-left: 0;
+        text-align: center;
+      }
     }
 
     /* ── Fade-in animation ─────────────────────────────────────────── */
@@ -440,8 +527,15 @@
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(8px); }
-      to   { opacity: 1; transform: translateY(0); }
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     /* ── User row removal ──────────────────────────────────────────── */
@@ -450,10 +544,17 @@
     }
 
     @keyframes slideOut {
-      to { opacity: 0; transform: translateX(40px); max-height: 0; padding: 0 14px; overflow: hidden; }
+      to {
+        opacity: 0;
+        transform: translateX(40px);
+        max-height: 0;
+        padding: 0 14px;
+        overflow: hidden;
+      }
     }
   </style>
 </head>
+
 <body>
   <div class="container">
 
@@ -468,28 +569,29 @@
             0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82
             2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65
             3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013
-            0 0016 8c0-4.42-3.58-8-8-8z"/>
+            0 0016 8c0-4.42-3.58-8-8-8z" />
         </svg>
         GitHub Unfollow Tool
       </h1>
-      <p>Seni takip etmeyen kullanıcıları bul ve takipten çık</p>
+      <p>Find users who don't follow you back and unfollow them</p>
     </header>
 
     <!-- ═══ Section 1: Token Input ═══ -->
     <div class="card" id="authCard">
-      <div class="card-title">🔑 Bağlantı</div>
+      <div class="card-title">🔑 Connection</div>
 
       <div id="authForm">
         <div class="input-group">
           <input type="password" id="tokenInput" placeholder="GitHub Personal Access Token" />
           <button class="btn btn-primary" id="connectBtn" onclick="connect()">
-            Bağlan
+            Connect
           </button>
         </div>
         <p style="font-size:0.8rem; color:var(--text-dim); margin-top:4px;">
-          Token'ın yok mu?
-          <a href="https://github.com/settings/tokens/new?scopes=user:follow&description=gh-unfollow" target="_blank" rel="noopener">
-            Buradan oluştur →
+          Don't have a token?
+          <a href="https://github.com/settings/tokens/new?scopes=user:follow&description=gh-unfollow" target="_blank"
+            rel="noopener">
+            Create one here →
           </a>
         </p>
         <div id="authError" class="alert alert-error hidden" style="margin-top:12px;"></div>
@@ -502,16 +604,16 @@
             <strong id="profileName"></strong>
             <span id="profileLogin"></span>
           </div>
-          <button class="btn btn-sm" onclick="disconnect()">Çıkış</button>
+          <button class="btn btn-sm" onclick="disconnect()">Logout</button>
         </div>
       </div>
     </div>
 
     <!-- ═══ Section 2: Load Data ═══ -->
     <div class="card hidden" id="loadCard">
-      <div class="card-title">📊 Veri Yükleme</div>
+      <div class="card-title">📊 Data Loading</div>
       <button class="btn btn-primary" id="loadBtn" onclick="loadData()" style="width:100%;">
-        Listeyi Yükle
+        Load List
       </button>
       <div id="loadProgress" class="hidden" style="margin-top:14px;">
         <div style="display:flex; align-items:center; gap:10px;">
@@ -528,15 +630,15 @@
       <div class="stats fade-in" id="statsRow">
         <div class="stat-card">
           <div class="num" id="statFollowing">0</div>
-          <div class="label">Takip Edilen</div>
+          <div class="label">Following</div>
         </div>
         <div class="stat-card">
           <div class="num" id="statFollowers">0</div>
-          <div class="label">Takipçi</div>
+          <div class="label">Followers</div>
         </div>
         <div class="stat-card highlight">
           <div class="num" id="statNon">0</div>
-          <div class="label">Seni Takip Etmiyor</div>
+          <div class="label">Not Following Back</div>
         </div>
       </div>
 
@@ -550,12 +652,12 @@
 
       <!-- Toolbar -->
       <div class="list-toolbar">
-        <input type="text" id="searchInput" placeholder="Kullanıcı ara..." oninput="filterList()" />
+        <input type="text" id="searchInput" placeholder="Search users..." oninput="filterList()" />
         <div class="btn-group">
-          <button class="btn btn-sm" onclick="selectAll()">Tümünü Seç</button>
-          <button class="btn btn-sm" onclick="deselectAll()">Seçimi Kaldır</button>
+          <button class="btn btn-sm" onclick="selectAll()">Select All</button>
+          <button class="btn btn-sm" onclick="deselectAll()">Deselect All</button>
         </div>
-        <span class="selected-count" id="selectedCount">0 seçili</span>
+        <span class="selected-count" id="selectedCount">0 selected</span>
       </div>
 
       <!-- User List -->
@@ -564,10 +666,10 @@
       <!-- Unfollow Controls -->
       <div style="margin-top:16px; display:flex; gap:10px; flex-wrap:wrap;">
         <button class="btn btn-danger" id="unfollowBtn" onclick="executeUnfollow()" disabled>
-          Seçilenleri Unfollow Et
+          Unfollow Selected
         </button>
         <button class="btn" id="refreshBtn" onclick="loadData()">
-          ↻ Yenile
+          ↻ Refresh
         </button>
       </div>
 
@@ -576,7 +678,7 @@
         <div class="progress-bar">
           <div class="progress-fill" id="progressFill"></div>
         </div>
-        <div class="progress-text" id="progressText">0 / 0 tamamlandı</div>
+        <div class="progress-text" id="progressText">0 / 0 completed</div>
       </div>
 
       <!-- Summary -->
@@ -587,7 +689,7 @@
     </div>
 
     <footer>
-      GitHub Unfollow Tool · Token sadece tarayıcınızda saklanır, hiçbir sunucuya gönderilmez. ·
+      GitHub Unfollow Tool · Your token is stored only in your browser and is never sent to any server. ·
       <a href="https://github.com" target="_blank">GitHub</a>
     </footer>
   </div>
@@ -616,7 +718,7 @@
     const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
     /**
-     * Parse rate limit headers from a GitHub API response
+     * Parse rate limit headers from a GitHub API response.
      */
     function parseRateLimit(response) {
       const remaining = response.headers.get('x-ratelimit-remaining');
@@ -634,7 +736,7 @@
     }
 
     /**
-     * Update rate limit badge in the UI
+     * Update the rate limit badge in the UI.
      */
     function updateRateLimitUI() {
       const badge = $('rateLimitBadge');
@@ -653,7 +755,7 @@
     }
 
     /**
-     * Build authorization headers for GitHub API
+     * Build authorization headers for the GitHub API.
      */
     function apiHeaders() {
       return {
@@ -664,7 +766,7 @@
     }
 
     /**
-     * Fetch all pages from a paginated GitHub API endpoint
+     * Fetch all pages from a paginated GitHub API endpoint.
      * @param {string} endpoint - e.g. '/user/followers'
      * @param {function} onPage - callback with (items, totalSoFar) for progress
      * @returns {Promise<Array>} all items combined
@@ -694,11 +796,11 @@
     }
 
     /**
-     * Parse GitHub API errors into user-friendly messages
+     * Parse GitHub API errors into user-friendly messages.
      */
     async function handleApiError(res) {
       if (res.status === 401) {
-        return 'Token geçersiz veya yetersiz izin. Lütfen token\'ınızı kontrol edin.';
+        return 'Invalid token or insufficient permissions. Please check your token.';
       }
       if (res.status === 403 || res.status === 429) {
         const resetTime = res.headers.get('x-ratelimit-reset');
@@ -706,22 +808,22 @@
           const resetDate = new Date(parseInt(resetTime, 10) * 1000);
           const now = new Date();
           const diffMin = Math.ceil((resetDate - now) / 60000);
-          return `Rate limit aşıldı. ~${diffMin} dakika sonra tekrar deneyin.`;
+          return `Rate limit exceeded. Please try again in ~${diffMin} minute(s).`;
         }
-        return 'Rate limit aşıldı. Lütfen bir süre bekleyip tekrar deneyin.';
+        return 'Rate limit exceeded. Please wait a while and try again.';
       }
       try {
         const body = await res.json();
-        return body.message || `API hatası: ${res.status}`;
+        return body.message || `API error: ${res.status}`;
       } catch {
-        return `API hatası: ${res.status}`;
+        return `API error: ${res.status}`;
       }
     }
 
     // ── Auth ───────────────────────────────────────────────────────
 
     /**
-     * Connect with a GitHub PAT — validate via GET /user
+     * Connect with a GitHub PAT — validate via GET /user.
      */
     async function connect() {
       const tokenEl = $('tokenInput');
@@ -731,12 +833,12 @@
 
       const token = tokenEl.value.trim();
       if (!token) {
-        showError(errEl, 'Lütfen bir token girin.');
+        showError(errEl, 'Please enter a token.');
         return;
       }
 
       btn.disabled = true;
-      btn.innerHTML = '<span class="spinner"></span> Bağlanıyor…';
+      btn.innerHTML = '<span class="spinner"></span> Connecting…';
 
       try {
         const res = await fetch('https://api.github.com/user', {
@@ -770,15 +872,15 @@
         $('authProfile').classList.remove('hidden');
         $('loadCard').classList.remove('hidden');
       } catch (e) {
-        showError(errEl, 'Ağ hatası. İnternet bağlantınızı kontrol edin.');
+        showError(errEl, 'Network error. Please check your internet connection.');
       } finally {
         btn.disabled = false;
-        btn.innerHTML = 'Bağlan';
+        btn.innerHTML = 'Connect';
       }
     }
 
     /**
-     * Disconnect — clear state and localStorage
+     * Disconnect — clear state and localStorage.
      */
     function disconnect() {
       state.token = null;
@@ -799,7 +901,7 @@
     // ── Data Loading ──────────────────────────────────────────────
 
     /**
-     * Load followers and following, compute non-followers
+     * Load followers and following, then compute non-followers.
      */
     async function loadData() {
       const btn = $('loadBtn');
@@ -814,25 +916,25 @@
 
       try {
         // Fetch following
-        status.textContent = 'Following yükleniyor…';
+        status.textContent = 'Loading following…';
         state.following = await fetchAll('/user/following', (_, total) => {
-          status.textContent = `Following yükleniyor… (${total})`;
+          status.textContent = `Loading following… (${total})`;
         });
 
         // Fetch followers
-        status.textContent = 'Followers yükleniyor…';
+        status.textContent = 'Loading followers…';
         state.followers = await fetchAll('/user/followers', (_, total) => {
-          status.textContent = `Followers yükleniyor… (${total})`;
+          status.textContent = `Loading followers… (${total})`;
         });
 
-        // Compute non-followers
+        // Compute non-followers: following - followers
         const followerSet = new Set(state.followers.map((u) => u.login.toLowerCase()));
         state.nonFollowers = state.following.filter(
           (u) => !followerSet.has(u.login.toLowerCase())
         );
         state.selected.clear();
 
-        // Show stats
+        // Update stats
         $('statFollowing').textContent = state.following.length;
         $('statFollowers').textContent = state.followers.length;
         $('statNon').textContent = state.nonFollowers.length;
@@ -850,7 +952,7 @@
         $('unfollowAlert').classList.add('hidden');
 
       } catch (e) {
-        showError(errEl, e.message || 'Veri yüklenirken bir hata oluştu.');
+        showError(errEl, e.message || 'An error occurred while loading data.');
       } finally {
         btn.disabled = false;
         prog.classList.add('hidden');
@@ -860,7 +962,7 @@
     // ── User List Rendering ───────────────────────────────────────
 
     /**
-     * Render the non-followers user list with current search filter
+     * Render the non-followers list, respecting the current search filter.
      */
     function renderUserList() {
       const container = $('userList');
@@ -873,8 +975,8 @@
         container.innerHTML = `
           <div class="empty-state">
             ${state.nonFollowers.length === 0
-              ? '🎉 Seni takip etmeyen kimse yok!'
-              : '🔍 Arama sonucu bulunamadı'}
+            ? '🎉 Everyone you follow is following you back!'
+            : '🔍 No results found'}
           </div>`;
         updateSelectedCount();
         return;
@@ -897,7 +999,7 @@
     }
 
     /**
-     * Toggle a user selection
+     * Toggle selection for a single user.
      */
     function toggleSelect(login, checked) {
       if (checked) {
@@ -909,16 +1011,16 @@
     }
 
     /**
-     * Update the selected count and unfollow button state
+     * Update the selected count display and unfollow button state.
      */
     function updateSelectedCount() {
       const count = state.selected.size;
-      $('selectedCount').textContent = `${count} seçili`;
+      $('selectedCount').textContent = `${count} selected`;
       $('unfollowBtn').disabled = count === 0 || state.isProcessing;
     }
 
     /**
-     * Select all visible (filtered) users
+     * Select all currently visible (filtered) users.
      */
     function selectAll() {
       const query = ($('searchInput')?.value || '').toLowerCase();
@@ -931,7 +1033,7 @@
     }
 
     /**
-     * Deselect all users
+     * Deselect all users.
      */
     function deselectAll() {
       state.selected.clear();
@@ -939,7 +1041,7 @@
     }
 
     /**
-     * Filter user list on search input
+     * Re-render the list when the search input changes.
      */
     function filterList() {
       renderUserList();
@@ -948,7 +1050,7 @@
     // ── Unfollow Execution ────────────────────────────────────────
 
     /**
-     * Execute unfollow for all selected users
+     * Execute unfollow for all selected users with rate limit protection.
      */
     async function executeUnfollow() {
       if (state.selected.size === 0 || state.isProcessing) return;
@@ -964,13 +1066,13 @@
       $('refreshBtn').disabled = true;
       $('unfollowAlert').classList.add('hidden');
 
-      // Show progress
+      // Show progress bar
       const progWrap = $('unfollowProgress');
       const fill = $('progressFill');
       const text = $('progressText');
       progWrap.classList.remove('hidden');
       fill.style.width = '0%';
-      text.textContent = `0 / ${total} tamamlandı`;
+      text.textContent = `0 / ${total} completed`;
 
       let stopped = false;
 
@@ -986,7 +1088,7 @@
           parseRateLimit(res);
 
           if (res.status === 204 || res.status === 404) {
-            // 204 = success, 404 = already unfollowed
+            // 204 = unfollowed successfully, 404 = already not following
             succeeded++;
 
             // Remove from state
@@ -1004,7 +1106,7 @@
           } else if (res.status === 403 || res.status === 429) {
             // Rate limit hit — stop processing
             const msg = await handleApiError(res);
-            showAlert('unfollowAlert', 'alert-warning', `⚠️ ${msg} — İşlem durduruldu.`);
+            showAlert('unfollowAlert', 'alert-warning', `⚠️ ${msg} — Process stopped.`);
             stopped = true;
             failed++;
           } else {
@@ -1018,21 +1120,21 @@
         const done = succeeded + failed;
         const pct = Math.round((done / total) * 100);
         fill.style.width = `${pct}%`;
-        text.textContent = `${done} / ${total} tamamlandı`;
+        text.textContent = `${done} / ${total} completed`;
 
-        // Rate limit warning check
+        // Rate limit warning
         if (state.rateLimit.remaining !== null && state.rateLimit.remaining < 10 && !stopped) {
           showAlert('unfollowAlert', 'alert-warning',
-            `⚠️ Rate limit düşük (${state.rateLimit.remaining} kalan). İşlem devam ediyor…`);
+            `⚠️ Rate limit is low (${state.rateLimit.remaining} remaining). Processing continues…`);
         }
 
-        // Delay between unfollows (unless last or stopped)
+        // 300ms delay between unfollows (unless last or stopped)
         if (i < total - 1 && !stopped) {
           await sleep(300);
         }
       }
 
-      // Done
+      // Done — restore UI state
       state.isProcessing = false;
       $('unfollowBtn').disabled = state.selected.size === 0;
       $('loadBtn').disabled = false;
@@ -1048,16 +1150,16 @@
     }
 
     /**
-     * Display the unfollow execution summary
+     * Display the unfollow execution summary.
      */
     function showSummary(total, succeeded, failed) {
       const el = $('unfollowSummary');
       el.classList.remove('hidden');
       el.innerHTML = `
         <div class="summary fade-in">
-          <div class="row"><span>Toplam İşlem</span><span class="val">${total}</span></div>
-          <div class="row success"><span>Başarılı</span><span class="val">${succeeded}</span></div>
-          ${failed > 0 ? `<div class="row fail"><span>Başarısız</span><span class="val">${failed}</span></div>` : ''}
+          <div class="row"><span>Total Processed</span><span class="val">${total}</span></div>
+          <div class="row success"><span>Succeeded</span><span class="val">${succeeded}</span></div>
+          ${failed > 0 ? `<div class="row fail"><span>Failed</span><span class="val">${failed}</span></div>` : ''}
         </div>`;
     }
 
@@ -1075,7 +1177,7 @@
       el.classList.remove('hidden');
     }
 
-    // ── Init: Restore token from localStorage ─────────────────────
+    // ── Init: Restore token from localStorage on page load ────────
     (function init() {
       const saved = localStorage.getItem('gh_unfollow_token');
       if (saved) {
@@ -1085,4 +1187,5 @@
     })();
   </script>
 </body>
+
 </html>
